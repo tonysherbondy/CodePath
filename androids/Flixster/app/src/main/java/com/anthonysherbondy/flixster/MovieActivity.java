@@ -29,6 +29,8 @@ public class MovieActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
 
+        Log.d("DEBUG", "onCreate: called");
+
         movies = new ArrayList<>();
         lvItems = (ListView) findViewById(R.id.lvMovies);
         movieAdapter = new MovieArrayAdapter(this, movies);

@@ -1,6 +1,8 @@
 package com.anthonysherbondy.flixster.adapters;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,13 @@ import java.util.List;
  * Created by anthonysherbondy on 9/12/16.
  */
 public class MovieArrayAdapter extends ArrayAdapter<Movie> {
+
+    private static class ViewHolder {
+        TextView tvTitle;
+        TextView tvOverview;
+        ImageView ivMovieImage;
+    }
+
     public MovieArrayAdapter(Context context, List<Movie> movies) {
         super(context, android.R.layout.simple_list_item_1, movies);
     }
@@ -28,26 +37,37 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         Movie movie = getItem(position);
 
         // check the existing view being reused
+        ViewHolder viewHolder;
         if (convertView == null) {
+            viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.item_movie, parent, false);
+            // find views
+            viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+            viewHolder.tvOverview = (TextView) convertView.findViewById(R.id.tvOverview);
+            viewHolder.ivMovieImage = (ImageView) convertView.findViewById(R.id.ivMovieImage);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        // find the image view
-        ImageView ivMovieImage = (ImageView) convertView.findViewById(R.id.ivMovieImage);
         // clear image from last time
-        ivMovieImage.setImageResource(0);
-
-        // find text views
-        TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-        TextView tvOverview = (TextView) convertView.findViewById(R.id.tvOverview);
-
+        viewHolder.ivMovieImage.setImageResource(0);
         // populate text
-        tvTitle.setText(movie.getOriginalTitle());
-        tvOverview.setText(movie.getOverview());
+        viewHolder.tvTitle.setText(movie.getOriginalTitle());
+        viewHolder.tvOverview.setText(movie.getOverview());
 
+        // get image path depending on orientation
+        String imagePath;
+        int orientation = getContext().getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            imagePath = movie.getBackdropPath();
+            Log.d("IMAGEPATH", imagePath);
+        } else {
+            imagePath = movie.getPosterPath();
+        }
         // populate image
-        Picasso.with(getContext()).load(movie.getPosterPath()).into(ivMovieImage);
+        Picasso.with(getContext()).load(imagePath).into(viewHolder.ivMovieImage);
 
         // return view
         return convertView;
