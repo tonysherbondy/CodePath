@@ -1,61 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#be646464"
-    tools:context="com.anthonysherbondy.flixster.DetailsActivity">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:layout_width="@dimen/backdrop_width"
-        android:layout_height="@dimen/backdrop_height"
-        android:id="@+id/ivMovieImage"
-        android:src="@mipmap/ic_launcher"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    <data>
+        <variable
+            name="movie"
+            type="com.anthonysherbondy.flixster.models.Movie"/>
+    </data>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/tvTitle"
-        android:layout_below="@+id/ivMovieImage"
-        android:layout_centerHorizontal="true" />
-
-
-
-    <RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/rbVote"
-        android:layout_below="@+id/tvTitle"
-        android:layout_centerHorizontal="true"
-        android:numStars="7"
-        tools:rating="4" />
-
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:id="@+id/scrollView"
-        android:layout_below="@+id/rbVote"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:background="#be646464"
+        tools:context="com.anthonysherbondy.flixster.DetailsActivity">
+
+        <RelativeLayout
+            android:id="@+id/rlImageWithOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/backdrop_width"
+                android:layout_height="@dimen/backdrop_height"
+                android:id="@+id/ivMovieImage"
+                android:src="@mipmap/ic_launcher"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"/>
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_play_circle_outline_black_24dp"/>
+        </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/tvSynopsis"
-            android:layout_alignParentTop="true"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@{movie.originalTitle}"
+            android:id="@+id/tvTitle"
+            android:layout_below="@+id/rlImageWithOverlay"
             android:layout_centerHorizontal="true" />
 
-    </ScrollView>
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rbVote"
+            android:layout_below="@+id/tvTitle"
+            android:layout_centerHorizontal="true"
+            android:numStars="7"
+            android:rating="@{movie.voteAverage}"
+            tools:rating="4" />
 
-</RelativeLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/scrollView"
+            android:layout_below="@+id/rbVote"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@{movie.overview}"
+                android:id="@+id/tvSynopsis"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+        </ScrollView>
+
+
+
+    </RelativeLayout>
+
+</layout>
