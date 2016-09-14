@@ -4,12 +4,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by anthonysherbondy on 9/12/16.
  */
-public class Movie {
+public class Movie implements Serializable {
     public String getPosterPath() {
         return String.format("https://image.tmdb.org/t/p/w342/%s", posterPath);
     }
@@ -34,9 +35,6 @@ public class Movie {
     String backdropPath;
     String originalTitle;
     String overview;
-
-
-
     double voteAverage;
 
     public Movie(JSONObject jsonObject) throws JSONException {

@@ -1,9 +1,12 @@
 package com.anthonysherbondy.flixster;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.anthonysherbondy.flixster.adapters.MovieArrayAdapter;
@@ -50,7 +53,21 @@ public class MovieActivity extends AppCompatActivity {
         movieAdapter = new MovieArrayAdapter(this, movies);
         lvItems.setAdapter(movieAdapter);
 
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Movie movie = movies.get(i);
+                launchDetailsView(movie);
+            }
+        });
+
         fetchMoviesAsync();
+    }
+
+    private void launchDetailsView(Movie movie) {
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtra("movie", movie);
+        startActivity(intent);
     }
 
     private void fetchMoviesAsync() {
