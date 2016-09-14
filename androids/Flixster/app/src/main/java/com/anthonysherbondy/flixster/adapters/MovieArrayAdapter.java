@@ -2,7 +2,6 @@ package com.anthonysherbondy.flixster.adapters;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +26,38 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         ImageView ivMovieImage;
     }
 
+    private boolean isPopular(Movie movie) {
+        return movie.getVoteAverage() > 4.5;
+    }
+
     public MovieArrayAdapter(Context context, List<Movie> movies) {
         super(context, android.R.layout.simple_list_item_1, movies);
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Movie movie = getItem(position);
+        if (isPopular(movie)) {
+            return 1;
+        }
+        return 0;
+    }
+
+    private View getInflatedLayoutForType(int type) {
+        if (type == 0) {
+            // Unpopular
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            return inflater.inflate(R.layout.item_movie, null, false);
+        } else {
+            // popular
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            return inflater.inflate(R.layout.item_popular_movie, null, false);
+        }
     }
 
     @Override
@@ -38,10 +67,11 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
         // check the existing view being reused
         ViewHolder viewHolder;
+        int itemType = getItemViewType(position);
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.item_movie, parent, false);
+            convertView = getInflatedLayoutForType(itemType);
+
             // find views
             viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
             viewHolder.tvOverview = (TextView) convertView.findViewById(R.id.tvOverview);
@@ -54,15 +84,18 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         // clear image from last time
         viewHolder.ivMovieImage.setImageResource(0);
         // populate text
-        viewHolder.tvTitle.setText(movie.getOriginalTitle());
-        viewHolder.tvOverview.setText(movie.getOverview());
+        if (viewHolder.tvTitle != null) {
+            viewHolder.tvTitle.setText(movie.getOriginalTitle());
+        }
+        if (viewHolder.tvOverview != null) {
+            viewHolder.tvOverview.setText(movie.getOverview());
+        }
 
         // get image path depending on orientation
         String imagePath;
         int orientation = getContext().getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE || movie.getVoteAverage() > 4.5) {
             imagePath = movie.getBackdropPath();
-            Log.d("IMAGEPATH", imagePath);
         } else {
             imagePath = movie.getPosterPath();
         }
