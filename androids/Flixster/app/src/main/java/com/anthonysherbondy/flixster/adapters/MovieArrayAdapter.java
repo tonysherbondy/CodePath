@@ -36,13 +36,17 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        int orientation = getContext().getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            return 2;
+        }
+        return 1;
     }
 
     @Override
     public int getItemViewType(int position) {
         Movie movie = getItem(position);
-        if (isPopular(movie)) {
+        if (getViewTypeCount() > 1 && isPopular(movie)) {
             return 1;
         }
         return 0;
