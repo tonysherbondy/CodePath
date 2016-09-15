@@ -35,10 +35,17 @@ public class Movie implements Serializable {
     String backdropPath;
     String originalTitle;
     String overview;
+
+    public String getId() {
+        return id;
+    }
+
+    String id;
     float voteAverage;
 
     public Movie(JSONObject jsonObject) throws JSONException {
         posterPath = jsonObject.getString("poster_path");
+        id = jsonObject.getString("id");
         backdropPath = jsonObject.getString("backdrop_path");
         originalTitle = jsonObject.getString("original_title");
         overview = jsonObject.getString("overview");
