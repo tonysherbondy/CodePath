@@ -64,7 +64,7 @@ public class DetailsActivity extends AppCompatActivity {
                     ytResults = response.getJSONArray("youtube");
                     if (ytResults.length() > 0) {
                         ytTrailerId = ytResults.getJSONObject(0).getString("source");
-                        Log.d("DEBUG", ytResults.toString());
+                        binding.ivPlayOverlay.setAlpha((float) 1);
                     }
                 } catch(JSONException e) {
                     e.printStackTrace();

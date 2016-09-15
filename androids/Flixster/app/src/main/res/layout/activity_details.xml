@@ -35,6 +35,9 @@
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:id="@+id/ivPlayOverlay"
+                android:alpha="0"
+                tools:alpha="1"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_play_circle_outline_black_24dp"/>
