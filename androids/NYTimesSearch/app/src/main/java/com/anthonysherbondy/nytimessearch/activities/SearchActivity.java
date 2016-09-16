@@ -3,6 +3,7 @@ package com.anthonysherbondy.nytimessearch.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -129,6 +130,9 @@ public class SearchActivity extends AppCompatActivity {
         Intent i = new Intent(this, SettingsActivity.class);
         i.putExtra("queryFilter", filter);
         startActivityForResult(i, SETTINGS_CODE);
+
+        // TODO - Move to dialog fragment
+//        showEditDialog();
     }
 
     @Override
@@ -138,4 +142,11 @@ public class SearchActivity extends AppCompatActivity {
             this.fetchNewQuery();
         }
     }
+
+    private void showEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        SettingsFragment settingsFragment = SettingsFragment.newInstance("Some Title");
+        settingsFragment.show(fm, "fragment_edit_name");
+    }
+
 }

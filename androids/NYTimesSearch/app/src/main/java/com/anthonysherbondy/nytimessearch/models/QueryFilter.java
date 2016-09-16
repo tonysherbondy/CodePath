@@ -6,11 +6,8 @@ import android.util.Log;
 import com.loopj.android.http.RequestParams;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
+import java.util.Calendar;
 
 /**
  * Created by anthonysherbondy on 9/16/16.
@@ -19,7 +16,12 @@ public class QueryFilter implements Serializable {
     Boolean ndArts = false;
     Boolean ndFashion = false;
     Boolean ndSports = true;
-    Date beginDate;
+
+    public void setBeginDate(Calendar beginDate) {
+        this.beginDate = beginDate;
+    }
+
+    Calendar beginDate;
 
     public Boolean getNdArts() {
         return ndArts;
@@ -33,8 +35,17 @@ public class QueryFilter implements Serializable {
         return ndSports;
     }
 
-    public Date getBeginDate() {
+    public Calendar getBeginDate() {
         return beginDate;
+    }
+    public String getBeginDateString() {
+        if (beginDate == null) {
+            return "";
+        }
+        int year = beginDate.get(Calendar.YEAR);
+        int month = beginDate.get(Calendar.MONTH) + 1;
+        int day = beginDate.get(Calendar.DAY_OF_MONTH);
+        return String.format("%d/%d/%d", month, day, year);
     }
 
     public int getSortOrder() {
@@ -45,12 +56,12 @@ public class QueryFilter implements Serializable {
     // 0: oldest, 1: newest
     int sortOrder = 0;
 
-    public QueryFilter(int sortOrder, Date beginDate, Boolean ndArts, Boolean ndFashion, Boolean ndSports) {
+    public QueryFilter(int sortOrder, Calendar beginDate, Boolean ndArts, Boolean ndFashion, Boolean ndSports) {
         this.sortOrder = sortOrder;
-        this.beginDate = beginDate;
         this.ndArts = ndArts;
         this.ndFashion = ndFashion;
         this.ndSports = ndSports;
+        this.beginDate = beginDate;
     }
 
     public QueryFilter() {
@@ -83,10 +94,11 @@ public class QueryFilter implements Serializable {
     }
 
     public void addParamsToRequest(RequestParams params) {
-        // TODO - add filter to params
-        DateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.ENGLISH);
         if (beginDate != null) {
-            String date = format.format(beginDate);
+            int year = beginDate.get(Calendar.YEAR);
+            int month = beginDate.get(Calendar.MONTH) + 1;
+            int day = beginDate.get(Calendar.DAY_OF_MONTH);
+            String date = String.format("%d%02d%02d", year, month, day);
             params.put("begin_date", date);
         } else {
             Log.d("DEBUG", "no date specified");
