@@ -27,7 +27,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:paddingTop="0dp"
-        android:background="#a4000000" />
+        android:background="#a42e2e2e" />
 
     <TextView
         android:layout_width="wrap_content"
