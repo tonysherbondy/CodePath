@@ -2,6 +2,8 @@ package com.anthonysherbondy.nytimessearch.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import android.widget.GridView;
 
 import com.anthonysherbondy.nytimessearch.ArticleArrayAdapter;
 import com.anthonysherbondy.nytimessearch.R;
+import com.anthonysherbondy.nytimessearch.listeners.EndlessScrollListener;
 import com.anthonysherbondy.nytimessearch.models.Article;
 import com.anthonysherbondy.nytimessearch.models.QueryFilter;
 import com.loopj.android.http.AsyncHttpClient;
@@ -27,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
@@ -39,6 +43,8 @@ public class SearchActivity extends AppCompatActivity {
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
     QueryFilter filter;
+    // Total number of articles we can scroll
+    int totalPossibleArticles = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,8 @@ public class SearchActivity extends AppCompatActivity {
 
         filter = new QueryFilter();
         setupViews();
+
+        Log.d("DEBUG", String.format("Network is %s", isOnline() ? "online" : "offline"));
     }
 
     public void setupViews() {
@@ -68,6 +76,17 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        gvResults.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                if (totalPossibleArticles > totalItemsCount) {
+                    fetchPage(page);
+                    return true;
+                }
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -78,25 +97,29 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void onArticleSearch(View view) {
+        // Clear keyboard
+        hideSoftKeyboard();
         this.fetchNewQuery();
     }
 
     private void fetchNewQuery() {
+        // remove previous articles
+        articles.clear();
+        totalPossibleArticles = 0;
+        // fetch the first page
+        fetchPage(0);
+    }
+
+    private void fetchPage(int page) {
         String query = etQuery.getText().toString();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
         params.put("api-key", apiKey);
         params.put("q", query);
-        params.put("page", 0);
+        params.put("page", page);
         filter.addParamsToRequest(params);
-        Log.d("DEBUG", String.format("New query for: %s?%s", url, params.toString()));
-
-        // remove previous articles
-        articles.clear();
-
-        // Clear keyboard
-        hideSoftKeyboard();
-
+        Log.d("DEBUG", String.format("Query for: %s?%s", url, params.toString()));
+        Log.d("DEBUG", String.format("Fetching page %d", page));
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
@@ -104,6 +127,7 @@ public class SearchActivity extends AppCompatActivity {
                 JSONArray articleJsonResults = null;
 
                 try {
+                    totalPossibleArticles = response.getJSONObject("response").getJSONObject("meta").getInt("hits");
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     articles.addAll(Article.fromJSONArray(articleJsonResults));
                     adapter.notifyDataSetChanged();
@@ -147,6 +171,24 @@ public class SearchActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         SettingsFragment settingsFragment = SettingsFragment.newInstance("Some Title");
         settingsFragment.show(fm, "fragment_edit_name");
+    }
+
+    private Boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+        return false;
     }
 
 }
