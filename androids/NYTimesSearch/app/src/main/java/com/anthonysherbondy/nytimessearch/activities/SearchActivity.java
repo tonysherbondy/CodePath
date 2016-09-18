@@ -6,7 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -14,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.GridView;
 
 import com.anthonysherbondy.nytimessearch.ArticleArrayAdapter;
@@ -38,13 +39,13 @@ import cz.msebera.android.httpclient.Header;
 public class SearchActivity extends AppCompatActivity {
 
     GridView gvResults;
-    EditText etQuery;
     String apiKey = "f886fb17fa1d44a280f905ea197e6f66";
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
     QueryFilter filter;
     // Total number of articles we can scroll
     int totalPossibleArticles = 0;
+    String currentQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,6 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void setupViews() {
-        etQuery = (EditText) findViewById(R.id.etQuery);
         gvResults = (GridView) findViewById(R.id.gvResults);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
@@ -93,16 +93,28 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
-        return true;
-    }
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // perform query
+                currentQuery = query;
+                fetchNewQuery();
+                return true;
+            }
 
-    public void onArticleSearch(View view) {
-        // Clear keyboard
-        hideSoftKeyboard();
-        this.fetchNewQuery();
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void fetchNewQuery() {
+        // Clear keyboard
+        hideSoftKeyboard();
         // remove previous articles
         articles.clear();
         totalPossibleArticles = 0;
@@ -111,11 +123,10 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void fetchPage(int page) {
-        String query = etQuery.getText().toString();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
         params.put("api-key", apiKey);
-        params.put("q", query);
+        params.put("q", currentQuery);
         params.put("page", page);
         filter.addParamsToRequest(params);
         Log.d("DEBUG", String.format("Query for: %s?%s", url, params.toString()));
