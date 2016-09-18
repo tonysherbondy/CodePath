@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/gvResults"
         android:layout_centerHorizontal="true"
-        android:numColumns="4"
+        android:numColumns="3"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true" />
 

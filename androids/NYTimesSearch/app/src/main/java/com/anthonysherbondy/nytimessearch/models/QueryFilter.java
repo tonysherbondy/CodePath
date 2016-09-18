@@ -54,7 +54,7 @@ public class QueryFilter implements Serializable {
 
     // TODO - Consider descriptors
     // 0: oldest, 1: newest
-    int sortOrder = 0;
+    int sortOrder = 1;
 
     public QueryFilter(int sortOrder, Calendar beginDate, Boolean ndArts, Boolean ndFashion, Boolean ndSports) {
         this.sortOrder = sortOrder;

@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent">
 
     <ImageView
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:scaleType="center"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerCrop"
         android:src="@mipmap/ic_launcher"
         android:id="@+id/ivThumbnail" />
     <TextView
         android:id="@+id/tvTitle"
-        android:text="Text View"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:ellipsize="end"
+        android:textSize="9sp"
+        tools:maxWidth="100dp"
+        tools:text="Maybe breaking out of prison was the easy part. After that, Richard W. Matt and David Sweat fought cold, hunger, and eventually each other before one was caught and one was killed."
+        android:maxLines="5"
+        android:layout_below="@+id/ivThumbnail"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-</LinearLayout>
+</RelativeLayout>
