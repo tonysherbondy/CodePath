@@ -50,7 +50,8 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article> {
 
         // Set image to new data
         if (!TextUtils.isEmpty(article.getThumbnail())) {
-            Picasso.with(getContext()).load(article.getThumbnail()).into(ivThumbnail);
+            Picasso.with(getContext()).load(article.getThumbnail())
+                    .into(ivThumbnail);
         }
 
         return convertView;
