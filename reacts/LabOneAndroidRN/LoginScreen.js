@@ -7,6 +7,7 @@ import {
   TextInput,
   Image,
   ToastAndroid,
+  TouchableOpacity,
 } from 'react-native'
 import * as constants from './constants'
 import Button from './Button'
@@ -56,6 +57,7 @@ const LoginScreen = () => {
       style={styles.image}
       resizeMode={Image.resizeMode.cover}
       source={require('./images/rio.jpg')}>
+      <StatusBar backgroundColor="black" barStyle="light-content" />
       <View style={styles.loginBox}>
         <Text style={[styles.text, styles.textLabel]}>Login a Cidade Maravilhosa!</Text>
         <TextInput
@@ -74,9 +76,11 @@ const LoginScreen = () => {
           <Button onPress={onBtn('Cancela')}>CANCELA</Button>
           <Button styles={styles.loginButton} onPress={onBtn('Login')}>LOGIN</Button>
         </View>
-        <Text style={[styles.text, styles.textLabel, styles.forgotLabel]}>
-          Opa, esqueci minha senha!
-        </Text>
+        <TouchableOpacity onPress={onBtn('Esqueci')}>
+          <Text style={[styles.text, styles.textLabel, styles.forgotLabel]}>
+            Opa, esqueci minha senha!
+          </Text>
+        </TouchableOpacity>
       </View>
     </Image>
   )
