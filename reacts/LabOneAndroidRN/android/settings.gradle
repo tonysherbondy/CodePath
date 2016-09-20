@@ -1,0 +1,3 @@
+rootProject.name = 'LabOneAndroidRN'
+
+include ':app'
