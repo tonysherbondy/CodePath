@@ -8,9 +8,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -66,7 +66,7 @@ public class SearchActivity extends AppCompatActivity {
         articles = new ArrayList<>();
         rvArticlesAdapter = new RVArticlesAdapter(this, articles);
         rvResults.setAdapter(rvArticlesAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(layoutManager);
 
         ItemClickSupport.addTo(rvResults).setOnItemClickListener(
