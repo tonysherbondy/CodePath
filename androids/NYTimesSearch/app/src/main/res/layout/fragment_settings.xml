@@ -19,14 +19,12 @@ tools:context="com.anthonysherbondy.nytimessearch.fragments.SettingsFragment">
         android:id="@+id/tvBeginDateLabel" />
 
     <TextView
-        android:inputType="date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:hint="@string/enter_date"
         android:id="@+id/tvBeginDate"
-        android:onClick="onEditBeginDate"
         android:layout_toRightOf="@+id/tvNewsDesk"
         android:layout_toEndOf="@+id/tvNewsDesk"
         android:layout_alignParentTop="true"

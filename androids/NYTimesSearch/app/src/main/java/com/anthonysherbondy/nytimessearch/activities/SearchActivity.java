@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SettingsFragment.OnSettingsSaveListener {
 
     String apiKey = "f886fb17fa1d44a280f905ea197e6f66";
     ArrayList<Article> articles;
@@ -58,6 +58,7 @@ public class SearchActivity extends AppCompatActivity {
 
         filter = new QueryFilter();
         setupViews();
+        fetchNewQuery();
 
         Log.d("DEBUG", String.format("Network is %s", isOnline() ? "online" : "offline"));
     }
@@ -184,7 +185,7 @@ public class SearchActivity extends AppCompatActivity {
     private void showSettingsDialog() {
         FragmentManager fm = getSupportFragmentManager();
         SettingsFragment settingsFragment = SettingsFragment.newInstance(filter);
-        settingsFragment.show(fm, "fragment_edit_name");
+        settingsFragment.show(fm, "settingsEditor");
     }
 
     private Boolean isNetworkAvailable() {
@@ -205,4 +206,9 @@ public class SearchActivity extends AppCompatActivity {
         return false;
     }
 
+    @Override
+    public void onSettingsSave(QueryFilter filter) {
+        this.filter = filter;
+        this.fetchNewQuery();
+    }
 }
