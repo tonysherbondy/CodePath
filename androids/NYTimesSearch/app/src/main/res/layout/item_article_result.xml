@@ -1,26 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="@dimen/card_margin"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:src="@mipmap/ic_launcher"
-        android:id="@+id/ivThumbnail" />
-    <TextView
-        android:id="@+id/tvTitle"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        android:ellipsize="end"
-        android:textSize="@dimen/text_size_small"
-        android:maxLines="5"
-        tools:text="Maybe breaking out of prison was the easy part. After that, Richard W. Matt and David Sweat fought cold, hunger, and eventually each other before one was caught and one was killed."
-        android:layout_below="@+id/ivThumbnail"
-        android:layout_centerHorizontal="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</RelativeLayout>
+    <RelativeLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/ic_launcher"
+            android:id="@+id/ivThumbnail" />
+        <TextView
+            android:id="@+id/tvTitle"
+            android:paddingLeft="@dimen/card_text_padding"
+            android:paddingRight="@dimen/card_text_padding"
+            android:ellipsize="end"
+            android:textSize="@dimen/text_size_small"
+            android:maxLines="5"
+            tools:text="Maybe breaking out of prison was the easy part. After that, Richard W. Matt and David Sweat fought cold, hunger, and eventually each other before one was caught and one was killed."
+            android:layout_below="@+id/ivThumbnail"
+            android:layout_centerHorizontal="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
