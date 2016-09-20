@@ -12,16 +12,17 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 2,
     backgroundColor: constants.colorControlNormal,
+    elevation: 3,
   }
 })
 
-const Button = ({ onPress, children }) => {
+const Button = ({ onPress, children, styles: ownStyles }) => {
   return (
     <TouchableNativeFeedback
         onPress={onPress}
         background={TouchableNativeFeedback.SelectableBackground()}>
-      <View style={styles.view}>
-        <Text style={{margin: 5}}>{children}</Text>
+      <View style={[styles.view, ownStyles]}>
+        <Text style={{margin: 10, color: 'black'}}>{children}</Text>
       </View>
     </TouchableNativeFeedback>
   )
