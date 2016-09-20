@@ -1,4 +1,4 @@
-package com.anthonysherbondy.nytimessearch;
+package com.anthonysherbondy.nytimessearch.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.anthonysherbondy.nytimessearch.R;
 import com.anthonysherbondy.nytimessearch.models.Article;
 import com.squareup.picasso.Picasso;
 

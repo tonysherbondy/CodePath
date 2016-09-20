@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -15,12 +17,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.GridView;
 
-import com.anthonysherbondy.nytimessearch.ArticleArrayAdapter;
+import com.anthonysherbondy.nytimessearch.ItemClickSupport;
 import com.anthonysherbondy.nytimessearch.R;
-import com.anthonysherbondy.nytimessearch.listeners.EndlessScrollListener;
+import com.anthonysherbondy.nytimessearch.adapters.RVArticlesAdapter;
+import com.anthonysherbondy.nytimessearch.listeners.EndlessRecyclerViewScrollListener;
 import com.anthonysherbondy.nytimessearch.models.Article;
 import com.anthonysherbondy.nytimessearch.models.QueryFilter;
 import com.loopj.android.http.AsyncHttpClient;
@@ -38,10 +39,10 @@ import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity {
 
-    GridView gvResults;
     String apiKey = "f886fb17fa1d44a280f905ea197e6f66";
     ArrayList<Article> articles;
-    ArticleArrayAdapter adapter;
+    RecyclerView rvResults;
+    RVArticlesAdapter rvArticlesAdapter;
     QueryFilter filter;
     // Total number of articles we can scroll
     int totalPossibleArticles = 0;
@@ -61,29 +62,31 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void setupViews() {
-        gvResults = (GridView) findViewById(R.id.gvResults);
+        rvResults = (RecyclerView) findViewById(R.id.rvResults);
         articles = new ArrayList<>();
-        adapter = new ArticleArrayAdapter(this, articles);
-        gvResults.setAdapter(adapter);
+        rvArticlesAdapter = new RVArticlesAdapter(this, articles);
+        rvResults.setAdapter(rvArticlesAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvResults.setLayoutManager(layoutManager);
 
-        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Article article = articles.get(i);
-                Intent intent = new Intent(SearchActivity.this, ArticleActivity.class);
-                intent.putExtra("url", article.getWebUrl());
-                startActivity(intent);
-            }
-        });
+        ItemClickSupport.addTo(rvResults).setOnItemClickListener(
+                new ItemClickSupport.OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                        Article article = articles.get(position);
+                        Intent intent = new Intent(SearchActivity.this, ArticleActivity.class);
+                        intent.putExtra("url", article.getWebUrl());
+                        startActivity(intent);
+                    }
+                }
+        );
 
-        gvResults.setOnScrollListener(new EndlessScrollListener() {
+        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (totalPossibleArticles > totalItemsCount) {
                     fetchPage(page);
-                    return true;
                 }
-                return false;
             }
         });
 
@@ -141,7 +144,7 @@ public class SearchActivity extends AppCompatActivity {
                     totalPossibleArticles = response.getJSONObject("response").getJSONObject("meta").getInt("hits");
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     articles.addAll(Article.fromJSONArray(articleJsonResults));
-                    adapter.notifyDataSetChanged();
+                    rvArticlesAdapter.notifyDataSetChanged();
                     Log.d("DEBUG", articles.toString());
 
                 } catch (JSONException e) {
