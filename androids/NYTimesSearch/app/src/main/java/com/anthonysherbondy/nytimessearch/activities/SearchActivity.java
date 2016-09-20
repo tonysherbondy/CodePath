@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.anthonysherbondy.nytimessearch.ItemClickSupport;
 import com.anthonysherbondy.nytimessearch.R;
 import com.anthonysherbondy.nytimessearch.adapters.RVArticlesAdapter;
+import com.anthonysherbondy.nytimessearch.fragments.SettingsFragment;
 import com.anthonysherbondy.nytimessearch.listeners.EndlessRecyclerViewScrollListener;
 import com.anthonysherbondy.nytimessearch.models.Article;
 import com.anthonysherbondy.nytimessearch.models.QueryFilter;
@@ -165,12 +166,11 @@ public class SearchActivity extends AppCompatActivity {
 
     private final int SETTINGS_CODE = 20;
     public void onSettings(MenuItem item) {
-        Intent i = new Intent(this, SettingsActivity.class);
-        i.putExtra("queryFilter", filter);
-        startActivityForResult(i, SETTINGS_CODE);
-
+//        Intent i = new Intent(this, SettingsActivity.class);
+//        i.putExtra("queryFilter", filter);
+//        startActivityForResult(i, SETTINGS_CODE);
         // TODO - Move to dialog fragment
-//        showEditDialog();
+        showSettingsDialog();
     }
 
     @Override
@@ -181,9 +181,9 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
-    private void showEditDialog() {
+    private void showSettingsDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        SettingsFragment settingsFragment = SettingsFragment.newInstance("Some Title");
+        SettingsFragment settingsFragment = SettingsFragment.newInstance(filter);
         settingsFragment.show(fm, "fragment_edit_name");
     }
 

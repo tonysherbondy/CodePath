@@ -15,7 +15,7 @@ import java.util.Calendar;
 public class QueryFilter implements Serializable {
     Boolean ndArts = false;
     Boolean ndFashion = false;
-    Boolean ndSports = false;
+    Boolean ndSports = true;
 
     public void setBeginDate(Calendar beginDate) {
         this.beginDate = beginDate;

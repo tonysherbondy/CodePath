@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.anthonysherbondy.nytimessearch.R;
 import com.anthonysherbondy.nytimessearch.models.Article;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -97,7 +97,7 @@ public class RVArticlesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 viewHolder.tvTitle.setText(article.getHeadline());
                 viewHolder.ivThumbnail.setImageResource(0);
                 if (!TextUtils.isEmpty(article.getThumbnail())) {
-                    Picasso.with(getContext())
+                    Glide.with(getContext())
                             .load(article.getThumbnail())
                             .into(viewHolder.ivThumbnail);
                 }
