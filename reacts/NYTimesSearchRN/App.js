@@ -1,99 +1,50 @@
 import React from 'react'
 import {
-  View,
-  StyleSheet,
-  TextInput,
-  ListView,
+  Navigator,
+  BackAndroid,
 } from 'react-native'
-import Button from './Button' // eslint-disable-line import/no-unresolved
-import { fetchArticles } from './api'
-import ArticleItem from './ArticleItem'
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  inputRow: {
-    flexDirection: 'row',
-  },
-  textInput: {
-    flex: 1,
-    height: 50,
-  },
-  grid: {
-    flex: 1,
-  },
-  gridContent: {
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-  },
-  article: {
-    // flex: 1,
-  },
-})
+import Search from './Search'
+import ArticleWebView from './ArticleWebView'
 
 class App extends React.Component {
-  state = {
-    query: '',
-    articleWidth: 0,
-    articleMargin: 5,
-    dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }),
+  componentWillMount() {
+    BackAndroid.addEventListener('hardwareBackPress', this.handleAndroidBack)
   }
-  componentDidMount() {
-    this.fetchNew()
+  componentWillUnmount() {
+    BackAndroid.removeEventListener('hardwareBackPress', this.handleAndroidBack)
   }
-  onSearch = () => {
-    this.fetchNew()
+  handleAndroidBack = () => {
+    // TODO - how to handle dialog transitions here
+    if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
+      this.navigator.pop()
+      return true
+    }
+    return false
   }
-  onLayoutGrid = ({ nativeEvent }) => {
-    const { layout } = nativeEvent
-    const padding = 2 * this.state.articleMargin
-    const articleWidth = Math.floor(layout.width / this.cellsPerRow) - padding
-    this.setState({ articleWidth })
-  }
-  cellsPerRow = 3
-  fetchNew() {
-    const { query } = this.state
-    fetchArticles({ query, page: 0 })
-      .then(articles => {
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(articles),
-        })
-      })
-      .catch(error => console.error(error))
-  }
-  renderRow = article => {
-    const {
-      articleWidth: width,
-      articleMargin: margin,
-    } = this.state
-    return (
-      <ArticleItem article={article} style={[styles.article, { width, margin }]} />
-    )
+  renderScene = (route, navigator) => {
+    this.navigator = navigator
+    switch (route.key) {
+      case 'article':
+        return (
+          <ArticleWebView article={route.article} />
+        )
+      case 'search':
+      default:
+        return (
+          <Search
+            onClickArticle={article => {
+              navigator.push({ key: 'article', article })
+            }}
+          />
+        )
+    }
   }
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.inputRow}>
-          <TextInput
-            style={styles.textInput}
-            value={this.state.query}
-            onChangeText={query => this.setState({ query })}
-          />
-          <Button onPress={this.onSearch}>
-            Search
-          </Button>
-        </View>
-        <ListView
-          style={styles.grid}
-          contentContainerStyle={styles.gridContent}
-          renderRow={this.renderRow}
-          dataSource={this.state.dataSource}
-          onLayout={this.onLayoutGrid}
-        />
-      </View>
+      <Navigator
+        initialRoute={{ key: 'search' }}
+        renderScene={this.renderScene}
+      />
     )
   }
 }

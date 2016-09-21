@@ -25,6 +25,7 @@ export const fetchArticles = async ({ query: q, page }) => {
     const { docs: articles } = responseJson.response
     return articles.map(article => ({
       ...article,
+      webUrl: article.web_url,
       thumbnail: getThumbnail(article),
     }))
   } catch (error) {
