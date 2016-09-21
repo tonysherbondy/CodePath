@@ -7,8 +7,13 @@ const getQueryParamsString = ({ q, page }) => (
   `?api-key=${esc(apiKey)}&q=${esc(q)}&page=${esc(page)}`
 )
 
+const getThumbnail = article => {
+  const { multimedia: m } = article
+  return m && m.length > 0 ? `http://www.nytimes.com/${m[0].url}` : null
+}
+
 export const fetchArticles = async ({ query: q, page }) => {
-  const queryString = getQueryParamsString({q, page})
+  const queryString = getQueryParamsString({ q, page })
   const fetchUrl = url + queryString
   console.log('fetching', fetchUrl)
   try {
@@ -18,11 +23,12 @@ export const fetchArticles = async ({ query: q, page }) => {
       throw responseJson.errors
     }
     const { docs: articles } = responseJson.response
-    if (articles.multimedia && articles.multimedia.length > 0) {
-      articles.thumbnail = articles.multimedia[0].url
-    }
-    return articles
+    return articles.map(article => ({
+      ...article,
+      thumbnail: getThumbnail(article),
+    }))
   } catch (error) {
     console.error(error)
   }
+  return null
 }
