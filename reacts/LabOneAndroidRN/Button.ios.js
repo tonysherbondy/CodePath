@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import {
-  TouchableNativeFeedback,
+  TouchableOpacity,
   View,
   Text,
   StyleSheet,
@@ -12,26 +12,23 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 2,
     backgroundColor: constants.colorControlNormal,
-    elevation: 3,
+    shadowRadius: 2,
+    shadowColor: 'black',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 1, height: 1},
   }
 })
 
 const Button = ({ onPress, children, styles: ownStyles }) => {
   return (
-    <TouchableNativeFeedback
-        onPress={onPress}
-        background={TouchableNativeFeedback.SelectableBackground()}>
+    <TouchableOpacity onPress={onPress}>
       <View style={[styles.view, ownStyles]}>
         <Text style={{margin: 10, color: 'black'}}>{children}</Text>
       </View>
-    </TouchableNativeFeedback>
+    </TouchableOpacity>
   )
 }
 
-// const Button = ({ onPress, children }) => {
-//   return (
-//   )
-// }
 Button.propTypes = {
   onPress: PropTypes.func.isRequired,
   children: PropTypes.node,

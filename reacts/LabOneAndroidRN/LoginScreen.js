@@ -4,13 +4,14 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   Image,
   ToastAndroid,
   TouchableOpacity,
+  Platform,
 } from 'react-native'
 import * as constants from './constants'
 import Button from './Button'
+import MyTextInput from './MyTextInput'
 
 const styles = StyleSheet.create({
   container: {
@@ -45,11 +46,19 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   input: {
-    height: 50,
-  }
+    height: Platform.select({
+      ios: 40,
+      android: 50,
+    }),
+  },
 })
 
-const onBtn = msg => () => ToastAndroid.show(msg, ToastAndroid.SHORT)
+const onBtn = msg => (
+  Platform.select({
+    ios: () => console.log(msg),
+    android: () => ToastAndroid.show(msg, ToastAndroid.SHORT)
+  })
+)
 
 const LoginScreen = () => {
   return (
@@ -60,17 +69,19 @@ const LoginScreen = () => {
       <StatusBar backgroundColor="black" barStyle="light-content" />
       <View style={styles.loginBox}>
         <Text style={[styles.text, styles.textLabel]}>Login a Cidade Maravilhosa!</Text>
-        <TextInput
+        <MyTextInput
           style={[styles.text, styles.input]}
           keyboardType="email-address"
           placeholder="E-mail"
           placeholderTextColor={constants.colorControlNormal}
+          selectionColor={constants.colorAccent}
           />
-        <TextInput
+        <MyTextInput
           style={[styles.text, styles.input]}
           secureTextEntry
           placeholder="Senha"
           placeholderTextColor={constants.colorControlNormal}
+          selectionColor={constants.colorAccent}
           />
         <View style={styles.buttonRow}>
           <Button onPress={onBtn('Cancela')}>CANCELA</Button>

@@ -5,3 +5,4 @@
 * Need to use ```elevation``` property for shadows on Android.
 * TextInput for iOS needs ```height``` set.
 * In Android, the default style is for an EditText in an activity to be auto-focused, but without showing the soft keyboard. In React Native and iOS the default is to leave TextInputs non-focused on screen, just went with ReactNative default for this for now.
+* Shows platform dependence using file extensions and ```Platform``` module
