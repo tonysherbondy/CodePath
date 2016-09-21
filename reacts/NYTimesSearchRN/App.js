@@ -22,14 +22,23 @@ const styles = StyleSheet.create({
   },
   grid: {
     flex: 1,
-    borderWidth: 2,
-    borderColor: 'rgb(82, 56, 235)',
+  },
+  gridContent: {
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+  },
+  article: {
+    // flex: 1,
   },
 })
 
 class App extends React.Component {
   state = {
     query: '',
+    articleWidth: 0,
+    articleMargin: 5,
     dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }),
   }
   componentDidMount() {
@@ -38,6 +47,13 @@ class App extends React.Component {
   onSearch = () => {
     this.fetchNew()
   }
+  onLayoutGrid = ({ nativeEvent }) => {
+    const { layout } = nativeEvent
+    const padding = 2 * this.state.articleMargin
+    const articleWidth = Math.floor(layout.width / this.cellsPerRow) - padding
+    this.setState({ articleWidth })
+  }
+  cellsPerRow = 3
   fetchNew() {
     const { query } = this.state
     fetchArticles({ query, page: 0 })
@@ -47,6 +63,15 @@ class App extends React.Component {
         })
       })
       .catch(error => console.error(error))
+  }
+  renderRow = article => {
+    const {
+      articleWidth: width,
+      articleMargin: margin,
+    } = this.state
+    return (
+      <ArticleItem article={article} style={[styles.article, { width, margin }]} />
+    )
   }
   render() {
     return (
@@ -63,8 +88,10 @@ class App extends React.Component {
         </View>
         <ListView
           style={styles.grid}
-          renderRow={article => <ArticleItem article={article} />}
+          contentContainerStyle={styles.gridContent}
+          renderRow={this.renderRow}
           dataSource={this.state.dataSource}
+          onLayout={this.onLayoutGrid}
         />
       </View>
     )

@@ -8,24 +8,23 @@ import FitImage from './FitImage'
 
 const styles = StyleSheet.create({
   container: {
-    margin: 5,
     padding: 5,
     backgroundColor: 'white',
     elevation: 2,
   },
   image: {
-    flex: 1,
   },
 })
 
 class ArticleItem extends React.Component {
   static propTypes = {
+    style: View.propTypes.style,
     article: PropTypes.object.isRequired,
   }
   render() {
-    const { article } = this.props
+    const { article, style } = this.props
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, style]}>
         {article.thumbnail ?
           <FitImage
             source={{ uri: article.thumbnail }}
