@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import {
   ToolbarAndroid,
   StyleSheet,
@@ -16,12 +16,16 @@ const actions = [
   { title: 'Settings', show: 'ifRoom' },
 ]
 
-const Toolbar = () => (
+const Toolbar = ({ onSettings }) => (
   <ToolbarAndroid
     style={styles.toolbar}
     title="NYTimesSearchRN"
     actions={actions}
+    onActionSelected={() => onSettings()}
   />
 )
+Toolbar.propTypes = {
+  onSettings: PropTypes.func.isRequired,
+}
 
 export default Toolbar
