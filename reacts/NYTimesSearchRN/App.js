@@ -2,9 +2,11 @@ import React from 'react'
 import {
   Navigator,
   BackAndroid,
+  View,
 } from 'react-native'
 import Search from './Search'
 import ArticleWebView from './ArticleWebView'
+import Toolbar from './Toolbar'
 
 class App extends React.Component {
   componentWillMount() {
@@ -31,17 +33,21 @@ class App extends React.Component {
       case 'search':
       default:
         return (
-          <Search
-            onClickArticle={article => {
-              navigator.push({ key: 'article', article })
-            }}
-          />
+          <View style={{ flex: 1 }}>
+            <Toolbar />
+            <Search
+              onClickArticle={article => {
+                navigator.push({ key: 'article', article })
+              }}
+            />
+          </View>
         )
     }
   }
   render() {
     return (
       <Navigator
+        configureScene={() => Navigator.SceneConfigs.FloatFromBottomAndroid}
         initialRoute={{ key: 'search' }}
         renderScene={this.renderScene}
       />
