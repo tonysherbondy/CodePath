@@ -89,9 +89,7 @@ class Search extends React.Component {
             value={this.state.query}
             onChangeText={query => this.setState({ query })}
           />
-          <Button onPress={this.onSearch}>
-            Search
-          </Button>
+          <Button onPress={this.onSearch}>Search</Button>
         </View>
         <ListView
           style={styles.grid}

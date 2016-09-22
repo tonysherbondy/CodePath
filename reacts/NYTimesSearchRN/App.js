@@ -3,17 +3,23 @@ import {
   Navigator,
   BackAndroid,
   View,
-  Modal,
-  Text,
-  TouchableWithoutFeedback,
 } from 'react-native'
 import Search from './Search'
 import ArticleWebView from './ArticleWebView'
 import Toolbar from './Toolbar'
+import SettingsModal from './SettingsModal'
+import * as constants from './constants'
 
 class App extends React.Component {
   state = {
     settingsModalVisible: false,
+    filter: {
+      beginDate: null,
+      sortOrder: constants.ORDER_NEWEST,
+      ndArts: false,
+      ndFashion: false,
+      ndSports: false,
+    },
   }
   componentWillMount() {
     BackAndroid.addEventListener('hardwareBackPress', this.handleAndroidBack)
@@ -29,8 +35,8 @@ class App extends React.Component {
     }
     return false
   }
-  dismissModal = () => {
-    this.setState({ settingsModalVisible: false })
+  saveSettings = filter => {
+    this.setState({ filter, settingsModalVisible: false })
   }
   renderScene = (route, navigator) => {
     this.navigator = navigator
@@ -44,22 +50,12 @@ class App extends React.Component {
         return (
           <View style={{ flex: 1 }}>
             <Toolbar onSettings={() => this.setState({ settingsModalVisible: true })} />
-            <Modal
-              animationType="fade"
-              transparent
+            <SettingsModal
+              filter={this.state.filter}
               visible={this.state.settingsModalVisible}
-              onRequestClose={this.dismissModal}
-            >
-              <TouchableWithoutFeedback onPress={this.dismissModal}>
-                <View style={{ flex: 1, backgroundColor: 'rgba(10, 10, 10, 0.4)' }}>
-                  <TouchableWithoutFeedback>
-                    <View style={{ margin: 50, backgroundColor: 'white' }}>
-                      <Text>Hello Modal!</Text>
-                    </View>
-                  </TouchableWithoutFeedback>
-                </View>
-              </TouchableWithoutFeedback>
-            </Modal>
+              onSave={this.saveSettings}
+              onDismissModal={() => this.setState({ settingsModalVisible: false })}
+            />
             <Search
               onClickArticle={article => {
                 navigator.push({ key: 'article', article })
