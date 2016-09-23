@@ -57,17 +57,35 @@ class Search extends React.Component {
     const articleWidth = Math.floor(layout.width / this.cellsPerRow) - padding
     this.setState({ articleWidth })
   }
+  articles = []
+  pageToFetch = 0
   cellsPerRow = 3
+  numTotalArticles = 0
+  endReachedThreshold = 400
   fetchNew() {
+    this.articles = []
+    this.pageToFetch = 0
+    this.fetchNextPage()
+  }
+  fetchNextPage() {
     const { query } = this.state
-    fetchArticles({ query, page: 0 })
-      .then(articles => {
-        console.log('articles', articles)
+    fetchArticles({ query, page: this.pageToFetch })
+      .then(({ articles, numTotalArticles }) => {
+        this.articles = this.articles.concat(articles)
+        this.numTotalArticles = numTotalArticles
+        this.pageToFetch++
         this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(articles),
+          dataSource: this.state.dataSource.cloneWithRows(this.articles),
         })
       })
       .catch(error => console.error(error))
+
+  }
+  handleEndReached = () => {
+    if (this.articles.length < this.numTotalArticles) {
+      // Fetch more
+      this.fetchNextPage();
+    }
   }
   renderRow = article => {
     const {
@@ -92,11 +110,14 @@ class Search extends React.Component {
           <Button onPress={this.onSearch}>Search</Button>
         </View>
         <ListView
+          pageSize={this.cellsPerRow}
           style={styles.grid}
           contentContainerStyle={styles.gridContent}
           renderRow={this.renderRow}
           dataSource={this.state.dataSource}
           onLayout={this.onLayoutGrid}
+          onEndReached={this.handleEndReached}
+          onEndReachedThreshold={this.endReachedThreshold}
         />
       </View>
     )

@@ -22,12 +22,15 @@ export const fetchArticles = async ({ query: q, page }) => {
     if (responseJson.status === 'ERROR') {
       throw responseJson.errors
     }
-    const { docs: articles } = responseJson.response
-    return articles.map(article => ({
-      ...article,
-      webUrl: article.web_url,
-      thumbnail: getThumbnail(article),
-    }))
+    const { docs: articles, meta: { hits } } = responseJson.response
+    return {
+      numTotalArticles: hits,
+      articles: articles.map(article => ({
+        ...article,
+        webUrl: article.web_url,
+        thumbnail: getThumbnail(article),
+      })),
+    }
   } catch (error) {
     console.error(error)
   }
