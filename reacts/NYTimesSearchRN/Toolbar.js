@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 import {
-  ToolbarAndroid,
   StyleSheet,
 } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import * as constants from './constants'
 
 const styles = StyleSheet.create({
@@ -13,11 +13,17 @@ const styles = StyleSheet.create({
 })
 
 const actions = [
-  { title: 'Settings', show: 'ifRoom' },
+  {
+    title: 'Settings',
+    show: 'ifRoom',
+    iconName: 'settings',
+    iconSize: 24,
+    iconColor: 'white',
+  },
 ]
 
 const Toolbar = ({ onSettings }) => (
-  <ToolbarAndroid
+  <Icon.ToolbarAndroid
     style={styles.toolbar}
     title="NYTimesSearchRN"
     actions={actions}

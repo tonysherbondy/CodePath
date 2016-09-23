@@ -8,6 +8,7 @@ import {
   Picker,
   DatePickerAndroid,
   TouchableOpacity,
+  Switch,
 } from 'react-native'
 import Button from './Button' // eslint-disable-line import/no-unresolved
 import * as constants from './constants'
@@ -34,6 +35,10 @@ const styles = StyleSheet.create({
     width: 100,
     height: 50,
   },
+  switchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 })
 
 const displayDate = date => (
@@ -52,6 +57,9 @@ class SettingsModal extends React.Component {
   state = {
     sortOrder: this.props.filter.sortOrder,
     beginDate: this.props.filter.beginDate,
+    ndArts: this.props.filter.ndArts,
+    ndFashion: this.props.filter.ndArts,
+    ndSports: this.props.filter.ndArts,
   }
   onSave = () => {
     this.props.onSave({
@@ -93,9 +101,27 @@ class SettingsModal extends React.Component {
                 <View style={styles.row}>
                   <Text style={styles.label}>News Desk Values</Text>
                   <View>
-                    <Text>Arts</Text>
-                    <Text>Fashion & Style</Text>
-                    <Text>Sports</Text>
+                    <View style={styles.switchRow}>
+                      <Switch
+                        onValueChange={ndArts => this.setState({ ndArts })}
+                        value={this.state.ndArts}
+                      />
+                      <Text>Arts</Text>
+                    </View>
+                    <View style={styles.switchRow}>
+                      <Switch
+                        onValueChange={ndFashion => this.setState({ ndFashion })}
+                        value={this.state.ndFashion}
+                      />
+                      <Text>Fashion & Style</Text>
+                    </View>
+                    <View style={styles.switchRow}>
+                      <Switch
+                        onValueChange={ndSports => this.setState({ ndSports })}
+                        value={this.state.ndSports}
+                      />
+                      <Text>Sports</Text>
+                    </View>
                   </View>
                 </View>
                 <View style={[styles.row, { alignItems: 'center' }]}>

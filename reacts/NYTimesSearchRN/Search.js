@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
 class Search extends React.Component {
   static propTypes = {
     onClickArticle: PropTypes.func.isRequired,
+    filter: PropTypes.object.isRequired,
   }
   state = {
     query: '',
@@ -48,6 +49,11 @@ class Search extends React.Component {
   componentDidMount() {
     this.fetchNew()
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.filter !== this.props.filter) {
+      this.fetchNew(this.state.query, nextProps.filter)
+    }
+  }
   onSearch = () => {
     this.fetchNew()
   }
@@ -57,19 +63,26 @@ class Search extends React.Component {
     const articleWidth = Math.floor(layout.width / this.cellsPerRow) - padding
     this.setState({ articleWidth })
   }
+  endReachedThreshold = 400
+  cellsPerRow = 3
   articles = []
   pageToFetch = 0
-  cellsPerRow = 3
   numTotalArticles = 0
-  endReachedThreshold = 400
-  fetchNew() {
+  fetchNew(query, filter) {
     this.articles = []
     this.pageToFetch = 0
-    this.fetchNextPage()
+    this.numTotalArticles = 0
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(this.articles),
+    })
+    if (this.listView) {
+      this.listView.scrollTo({ y: 0 })
+    }
+    this.fetchNextPage(query, filter)
   }
-  fetchNextPage() {
-    const { query } = this.state
-    fetchArticles({ query, page: this.pageToFetch })
+  fetchNextPage(query = this.state.query, filter = this.props.filter) {
+    console.log('fetching with filter', filter)
+    fetchArticles({ query, filter, page: this.pageToFetch })
       .then(({ articles, numTotalArticles }) => {
         this.articles = this.articles.concat(articles)
         this.numTotalArticles = numTotalArticles
@@ -83,7 +96,6 @@ class Search extends React.Component {
   }
   handleEndReached = () => {
     if (this.articles.length < this.numTotalArticles) {
-      // Fetch more
       this.fetchNextPage();
     }
   }
@@ -110,6 +122,8 @@ class Search extends React.Component {
           <Button onPress={this.onSearch}>Search</Button>
         </View>
         <ListView
+          ref={v => (this.listView = v)}
+          enableEmptySections
           pageSize={this.cellsPerRow}
           style={styles.grid}
           contentContainerStyle={styles.gridContent}

@@ -57,6 +57,7 @@ class App extends React.Component {
               onDismissModal={() => this.setState({ settingsModalVisible: false })}
             />
             <Search
+              filter={this.state.filter}
               onClickArticle={article => {
                 navigator.push({ key: 'article', article })
               }}
